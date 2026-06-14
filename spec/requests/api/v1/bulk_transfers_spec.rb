@@ -116,6 +116,27 @@ RSpec.describe "POST /api/v1/transfers/bulk", type: :request do
     end
   end
 
+  it "accepts a request that spends exactly the remaining balance" do
+    exact_amount = account.balance_cents
+    euros = (exact_amount / 100.0).to_s
+  
+    post_bulk(valid_payload.merge(
+      credit_transfers: [
+        {
+          amount: euros,
+          currency: "EUR",
+          counterparty_name: "Exact Spender",
+          counterparty_bic: "ZDRPLBQI",
+          counterparty_iban: "DE9935420810036209081725212",
+          description: "Exact balance test"
+        }
+      ]
+    ))
+  
+    expect(response).to have_http_status(:created)
+    expect(account.reload.balance_cents).to eq(0)
+  end
+  
   # NOTE: Concurrency testing is not performed at the request spec level.
   #
   # RSpec request specs share a single Rails integration session and response
