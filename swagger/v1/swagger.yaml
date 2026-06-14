@@ -1,0 +1,81 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+servers:
+- url: http://localhost:3000
+  description: Local development server
+paths:
+  "/api/v1/transfers/bulk":
+    post:
+      summary: Creates a bulk transfer
+      tags:
+      - Bulk Transfers
+      parameters: []
+      responses:
+        '201':
+          description: transfers created successfully
+        '422':
+          description: invalid request payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: invalid_request
+                  message:
+                    type: string
+                    example: Organization bic can't be blank
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - organization_bic
+              - organization_iban
+              - credit_transfers
+              properties:
+                organization_bic:
+                  type: string
+                  example: OIVUSCLQXXX
+                  description: BIC of the Qonto customer's organization
+                organization_iban:
+                  type: string
+                  example: FR10474608000002006107XXXXX
+                  description: IBAN of the Qonto customer's organization
+                credit_transfers:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - amount
+                    - currency
+                    - counterparty_bic
+                    - counterparty_iban
+                    - counterparty_name
+                    - description
+                    properties:
+                      amount:
+                        type: string
+                        example: '14.5'
+                        description: Amount in EUR, max 2 decimal places
+                      currency:
+                        type: string
+                        example: EUR
+                        description: Always EUR
+                      counterparty_name:
+                        type: string
+                        example: Bip Bip
+                      counterparty_bic:
+                        type: string
+                        example: CRLYFRPPTOU
+                      counterparty_iban:
+                        type: string
+                        example: EE383680981021245685
+                      description:
+                        type: string
+                        example: Wonderland/4410
