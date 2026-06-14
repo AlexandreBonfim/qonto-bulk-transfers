@@ -74,6 +74,15 @@ bundle exec rspec
 { "error": "account_not_found", "message": "account_not_found" }
 { "error": "invalid_request", "message": "Organization bic can't be blank" }
 ```
+## Interactive API documentation
+
+The API is documented with [rswag](https://github.com/rswag/rswag) and available as an interactive Swagger UI:
+
+```
+http://localhost:3000/api-docs
+```
+
+From there you can explore the full contract and execute requests directly in the browser without needing curl or Postman. The spec is auto-generated from the request specs, keeping documentation and implementation always in sync.
 
 ## Architecture
 
@@ -144,6 +153,7 @@ The `BulkTransferRequest` DTO validates the incoming payload before it touches t
 - `organization_bic` + `organization_iban` together uniquely identify an account.
 - `amount` is always a positive string with at most 2 decimal places, as stated in the spec.
 - The provided `qonto_accounts.sqlite` uses a `transactions` table. The PDF spec refers to `transfers`. We follow the actual database.
+- The actual `transactions` table includes an `amount_currency` column not present in the PDF spec(transfers). We store and validate it.
 
 ## Issues faced
 
@@ -163,8 +173,6 @@ The `BulkTransferRequest` DTO validates the incoming payload before it touches t
 
 **Docker setup**: A `Dockerfile` and `docker-compose.yml` are included for reviewers who prefer not to install Ruby locally. When switching to PostgreSQL, the compose file would spin up both the app and the database in one command.
 
-**OpenAPI documentation**: The route contract could be documented with `rswag` to generate interactive Swagger docs for consumers of this API.
-
 **Observability**: A production banking system needs full visibility into what's happening at runtime. I'd add three layers:
 
 - **Structured logging**: each bulk transfer request logged with a unique `request_id`, the account IBAN, total amount, number of transfers, and outcome (success/failure with reason). Using a structured format like JSON makes it trivially searchable.
@@ -172,3 +180,10 @@ The `BulkTransferRequest` DTO validates the incoming payload before it touches t
 - **Metrics**: counters and histograms for request volume, failure reasons (insufficient funds vs account not found vs invalid payload) and processing latency. Useful for alerting on unusual rejection spikes which could indicate a bug or a client issue.
 
 - **Alerting**: if the insufficient funds rejection rate spikes unexpectedly or if transaction counts drop to zero during business hours **something is wrong**. These alerts are only possible if the metrics layer is in place.
+
+## Feedback - PDF questions
+
+1. How much time did you spend completing this test?
+    - **3hrs and 24 min**
+2. How proud are you of your work?
+    - **Fairly proud**
