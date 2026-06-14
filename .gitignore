@@ -32,3 +32,7 @@
 /config/master.key
 
 .DS_Store
+db/*.sqlite-shm
+db/*.sqlite-wal
+db/test.sqlite
+db/production.sqlite
