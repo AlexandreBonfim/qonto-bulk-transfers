@@ -115,4 +115,18 @@ RSpec.describe "POST /api/v1/transfers/bulk", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
     end
   end
+
+  # NOTE: Concurrency testing is not performed at the request spec level.
+  #
+  # RSpec request specs share a single Rails integration session and response
+  # object, making them non-thread-safe. Spawning threads that call `post` here
+  # results in both threads reading the same `response` object, causing
+  # unpredictable 404s rather than real concurrent HTTP behaviour.
+  #
+  # True concurrency is tested at the command layer instead:
+  # see spec/contexts/bulk_transfers/commands/persist_transfers_concurrency_spec.rb
+  #
+  # In production with PostgreSQL, you could also verify this end-to-end by
+  # spinning up a real Puma server in the test suite and hitting it with
+  # Net::HTTP from multiple threads. Overkill for SQLite
 end

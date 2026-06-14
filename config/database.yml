@@ -19,7 +19,7 @@ development:
 test:
   <<: *default
   database: db/test.sqlite3
-
+  pool: 5
 
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
