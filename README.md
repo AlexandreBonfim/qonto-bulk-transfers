@@ -172,3 +172,10 @@ The `BulkTransferRequest` DTO validates the incoming payload before it touches t
 - **Metrics**: counters and histograms for request volume, failure reasons (insufficient funds vs account not found vs invalid payload) and processing latency. Useful for alerting on unusual rejection spikes which could indicate a bug or a client issue.
 
 - **Alerting**: if the insufficient funds rejection rate spikes unexpectedly or if transaction counts drop to zero during business hours **something is wrong**. These alerts are only possible if the metrics layer is in place.
+
+## Feedback - PDF questions
+
+1. How much time did you spend completing this test?
+    - **3hrs and 24 min**
+2. How proud are you of your work?
+    - **Fairly proud**
